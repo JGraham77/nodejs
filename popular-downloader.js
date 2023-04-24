@@ -9,9 +9,9 @@ rp("https://reddit.com/r/programmerhumor.json")
         let objs = [];
 
         posts.forEach((item) => {
-            if (item.data.preview) {
+            if (item.data.url_overridden_by_dest) {
                 let obj = {
-                    url: item.data.preview.images[0].source.url,
+                    url: item.data.url_overridden_by_dest,
                     id: item.data.preview.images[0].id,
                     type: ""
                 }
@@ -23,7 +23,7 @@ rp("https://reddit.com/r/programmerhumor.json")
 
 
         objs.forEach((img) => {
-            if (img.type !== ".gif") {
+            if (img.type === '.gif' || img.type === '.jpg' || img.type === '.jpeg' || img.type == '.png') {
                 let options = {
                     url: img.url,
                 };
@@ -31,7 +31,10 @@ rp("https://reddit.com/r/programmerhumor.json")
                     .then((res) => {
                         let buffer = Buffer.from(res, 'UTF8');
                         fs.writeFileSync("downloads/" + img.id + img.type, buffer);
-                    });
+                    })
+                    .catch(err => {
+                        console.log(err.message);
+                    })
             }
         });
     })
